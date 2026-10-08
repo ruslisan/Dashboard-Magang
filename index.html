@@ -19,6 +19,7 @@
             background-color: #f8fafc;
         }
         
+        /* Custom scrollbar for table */
         .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -27,9 +28,11 @@
         .chart-container { position: relative; height: 300px; width: 100%; }
         .chart-container-large { position: relative; height: 380px; width: 100%; }
 
+        /* Modal Styles */
         #inputModal, #historyModal, #guideModal { display: none; backdrop-filter: blur(4px); }
         #inputModal.active, #historyModal.active, #guideModal.active { display: flex; }
 
+        /* Plantation Satellite Pattern Banner */
         .plantation-banner {
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(6, 78, 59, 0.85)), 
                         url('https://images.unsplash.com/photo-1542332213-9b5a5a3fad35?auto=format&fit=crop&w=1200&q=80');
@@ -40,7 +43,6 @@
 </head>
 <body class="text-slate-800 antialiased">
 
-    <!-- Header Banner -->
     <header class="plantation-banner text-white p-6 shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
@@ -50,32 +52,31 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <h1 class="text-2xl font-bold tracking-tight">Dashboard Monitoring Effective Planted</h1>
-                        <span class="bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs px-2.5 py-0.5 rounded-full font-semibold">Live Google Sheets Sync</span>
+                        <span class="bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs px-2.5 py-0.5 rounded-full font-semibold">Live Ops</span>
                     </div>
                 </div>
             </div>
 
             <!-- Toolbar Buttons -->
             <div class="flex flex-wrap items-center gap-2.5">
-                <button id="syncGoogleBtn" class="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 text-white py-1.5 px-3.5 rounded-full font-medium transition-colors text-sm shadow-sm" title="Sinkronisasi dengan Google Sheets">
-                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                    Sync Google Sheets
-                </button>
-                <button id="openGuideBtn" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white py-1.5 px-3.5 rounded-full font-medium transition-colors text-sm shadow-sm">
+                <button id="openGuideBtn" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white py-1.5 px-3.5 rounded-full font-medium transition-colors text-sm shadow-sm" title="Panduan Kustomisasi & Sinkronisasi">
                     <i data-lucide="book-open" class="w-4 h-4"></i>
                     Panduan & Sinkronisasi
                 </button>
-                <button id="exportExcelBtn" class="flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700 text-emerald-300 py-1.5 px-3.5 rounded-full font-medium transition-colors text-sm border border-slate-600 shadow-sm">
+                <button id="exportExcelBtn" class="flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700 text-emerald-300 py-1.5 px-3.5 rounded-full font-medium transition-colors text-sm border border-slate-600 shadow-sm" title="Download data CSV">
                     <i data-lucide="download" class="w-4 h-4"></i>
                     Export CSV
                 </button>
-                <button id="openHistoryBtn" class="flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700 text-sky-300 py-1.5 px-3.5 rounded-full font-medium transition-colors text-sm border border-slate-600 shadow-sm">
+                <button id="openHistoryBtn" class="flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700 text-sky-300 py-1.5 px-3.5 rounded-full font-medium transition-colors text-sm border border-slate-600 shadow-sm" title="Histori Audit Perubahan">
                     <i data-lucide="history" class="w-4 h-4"></i>
                     Histori Edit
                 </button>
                 <button id="openInputBtn" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white py-1.5 px-4 rounded-full font-medium transition-colors text-sm shadow-md">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
                     Input Harian
+                </button>
+                <button id="resetStorageBtn" class="flex items-center gap-2 bg-slate-800/80 hover:bg-rose-900/60 text-slate-300 hover:text-white py-1.5 px-3 rounded-full font-medium transition-colors text-sm border border-slate-600" title="Reset Data">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
                 </button>
             </div>
         </div>
@@ -91,7 +92,7 @@
             <div class="flex flex-wrap items-center gap-3 text-sm">
                 <div class="flex items-center gap-1.5">
                     <label for="filterPeriod" class="text-xs text-slate-500 font-medium">Periode:</label>
-                    <select id="filterPeriod" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-700">
+                    <select id="filterPeriod" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-700 focus:ring-emerald-500 focus:border-emerald-500">
                         <option value="all">Semua Waktu (Tanpa Batas)</option>
                         <option value="month">Bulan Tertentu</option>
                         <option value="week">Minggu Tertentu</option>
@@ -100,11 +101,11 @@
                 </div>
 
                 <div id="monthFilterContainer" class="hidden flex items-center gap-1.5">
-                    <input type="month" id="filterMonthInput" class="bg-slate-50 border border-slate-300 rounded-lg px-2 py-1 text-xs">
+                    <input type="month" id="filterMonthInput" class="bg-slate-50 border border-slate-300 rounded-lg px-2 py-1 text-xs text-slate-700">
                 </div>
 
                 <div id="weekFilterContainer" class="hidden flex items-center gap-1.5">
-                    <input type="week" id="filterWeekInput" class="bg-slate-50 border border-slate-300 rounded-lg px-2 py-1 text-xs">
+                    <input type="week" id="filterWeekInput" class="bg-slate-50 border border-slate-300 rounded-lg px-2 py-1 text-xs text-slate-700">
                 </div>
 
                 <div id="customDateContainer" class="hidden flex items-center gap-2">
@@ -133,7 +134,7 @@
         
         <!-- Metrics Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 flex flex-col justify-between">
+            <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 flex flex-col justify-between hover:shadow-md transition-shadow">
                 <div class="flex items-center justify-between mb-4">
                     <div class="bg-indigo-50 text-indigo-600 p-3 rounded-xl border border-indigo-100">
                         <i data-lucide="grid" class="w-6 h-6"></i>
@@ -146,7 +147,7 @@
                 </div>
             </div>
             
-            <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 flex flex-col justify-between">
+            <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 flex flex-col justify-between hover:shadow-md transition-shadow">
                 <div class="flex items-center justify-between mb-4">
                     <div class="bg-emerald-50 text-emerald-600 p-3 rounded-xl border border-emerald-100">
                         <i data-lucide="check-circle-2" class="w-6 h-6"></i>
@@ -162,7 +163,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 flex flex-col justify-between">
+            <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 flex flex-col justify-between hover:shadow-md transition-shadow">
                  <div class="flex items-center justify-between mb-4">
                     <div class="bg-amber-50 text-amber-600 p-3 rounded-xl border border-amber-100">
                         <i data-lucide="users" class="w-6 h-6"></i>
@@ -170,12 +171,12 @@
                      <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tim (PIC)</span>
                 </div>
                 <div>
-                    <p class="text-3xl font-extrabold text-slate-800">4</p>
+                    <p class="text-3xl font-extrabold text-slate-800" id="metricTotalPekerja">4</p>
                     <p class="text-sm text-slate-500 mt-1">Atika, Meiva, Rico, Galuh</p>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 flex flex-col justify-between">
+            <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5 flex flex-col justify-between hover:shadow-md transition-shadow">
                  <div class="flex items-center justify-between mb-4">
                     <div class="bg-sky-50 text-sky-600 p-3 rounded-xl border border-sky-100">
                         <i data-lucide="calendar-clock" class="w-6 h-6"></i>
@@ -198,43 +199,53 @@
                 <i data-lucide="award" class="text-emerald-600 w-5 h-5"></i>
                 Key Performance Indicator (KPI) Tim
             </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kpiContainer"></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kpiContainer">
+                <!-- Injected by JS -->
+            </div>
         </div>
 
         <!-- Charts Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Pie/Doughnut Chart Status -->
             <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5">
                 <div class="mb-4 flex items-center justify-between">
                     <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
                         <i data-lucide="pie-chart" class="w-5 h-5 text-indigo-500"></i> Proporsi Status Tugas
                     </h3>
+                    <span class="text-xs text-slate-400 font-medium">Distribusi %</span>
                 </div>
                 <div class="chart-container"><canvas id="statusPieChart"></canvas></div>
             </div>
 
+            <!-- Bar Chart PIC Workload -->
             <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5">
                 <div class="mb-4 flex items-center justify-between">
                     <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
                         <i data-lucide="bar-chart-2" class="w-5 h-5 text-emerald-500"></i> Beban Kerja per PIC
                     </h3>
+                    <span class="text-xs text-slate-400 font-medium">Jumlah Grid</span>
                 </div>
                 <div class="chart-container"><canvas id="picChart"></canvas></div>
             </div>
 
+            <!-- Priority Distribution -->
             <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5">
                 <div class="mb-4 flex items-center justify-between">
                     <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
                         <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-500"></i> Distribusi Prioritas Grid
                     </h3>
+                    <span class="text-xs text-slate-400 font-medium">Tingkat Kesulitan</span>
                 </div>
                 <div class="chart-container"><canvas id="priorityChart"></canvas></div>
             </div>
 
+            <!-- Total Working Days per PIC -->
             <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5">
                 <div class="mb-4 flex items-center justify-between">
                     <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
                         <i data-lucide="calendar-days" class="w-5 h-5 text-sky-500"></i> Total Hari Kerja per PIC
                     </h3>
+                    <span class="text-xs text-slate-400 font-medium">Akumulasi Hari</span>
                 </div>
                 <div class="chart-container"><canvas id="daysChart"></canvas></div>
             </div>
@@ -242,11 +253,18 @@
 
         <!-- Monthly Trend Line/Bar Chart -->
         <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-5">
-            <div class="mb-4 flex justify-between items-center">
-                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                    <i data-lucide="trending-up" class="w-5 h-5 text-emerald-600"></i>
-                    Tren Rekapitulasi Bulanan Effective Planted
-                </h3>
+            <div class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                <div>
+                    <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                        <i data-lucide="trending-up" class="w-5 h-5 text-emerald-600"></i>
+                        Tren Rekapitulasi Bulanan Effective Planted
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Grafik garis & batang tren jumlah grid berdasarkan Tanggal Mulai.</p>
+                </div>
+                <div class="flex items-center gap-2 text-xs bg-slate-100 px-3 py-1.5 rounded-lg text-slate-600">
+                    <i data-lucide="info" class="w-4 h-4 text-emerald-600"></i>
+                    Menampilkan total grid aktif per bulan
+                </div>
             </div>
             <div class="chart-container-large">
                 <canvas id="monthlyTrendChart"></canvas>
@@ -263,16 +281,17 @@
                     <p class="text-xs text-slate-500 mt-0.5">Daftar lengkap grid penanaman efektif, tanggal, approval, dan catatan lapangan.</p>
                 </div>
                 
+                <!-- Table Specific Date Range Filter -->
                 <div class="flex flex-wrap items-center gap-2 text-xs">
-                    <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-2.5 py-1.5">
+                    <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 shadow-2xs">
                         <i data-lucide="calendar" class="w-3.5 h-3.5 text-emerald-600"></i>
-                        <span>Filter Tanggal:</span>
-                        <input type="date" id="tableFilterStart" class="bg-transparent outline-none">
-                        <span>s/d</span>
-                        <input type="date" id="tableFilterEnd" class="bg-transparent outline-none">
-                        <button id="clearTableDateBtn" class="text-slate-400 hover:text-slate-600 ml-1 font-bold">×</button>
+                        <span class="font-medium text-slate-600">Filter Tanggal:</span>
+                        <input type="date" id="tableFilterStart" class="bg-transparent text-slate-700 outline-none">
+                        <span class="text-slate-400">s/d</span>
+                        <input type="date" id="tableFilterEnd" class="bg-transparent text-slate-700 outline-none">
+                        <button id="clearTableDateBtn" class="text-slate-400 hover:text-slate-600 ml-1 font-bold" title="Reset Filter Tanggal Tabel">×</button>
                     </div>
-                    <div class="bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-full text-xs font-bold border border-emerald-200">
+                    <div class="bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-full text-xs font-bold border border-emerald-200 shadow-2xs whitespace-nowrap">
                         <span id="tableRowCount">0</span> Baris Data
                     </div>
                 </div>
@@ -280,7 +299,7 @@
             
             <div class="overflow-x-auto custom-scrollbar max-h-[500px]">
                 <table class="w-full text-xs text-left text-slate-600">
-                    <thead class="text-[11px] text-slate-500 uppercase bg-slate-100/90 sticky top-0 z-10">
+                    <thead class="text-[11px] text-slate-500 uppercase bg-slate-100/90 sticky top-0 shadow-2xs z-10">
                         <tr>
                             <th class="px-3 py-3 font-bold border-b border-slate-200 w-10">No</th>
                             <th class="px-3 py-3 font-bold border-b border-slate-200">Grid ID</th>
@@ -295,51 +314,66 @@
                             <th class="px-3 py-3 font-bold border-b border-slate-200 text-center">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
+                    <tbody id="tableBody" class="divide-y divide-slate-100">
+                        <!-- Injected by JS -->
+                    </tbody>
                 </table>
             </div>
         </div>
+
+        <footer class="mt-8 text-center text-xs text-slate-400 pb-8">
+            <p>&copy; Effective Planted Ops Analytics. Auto-saved in Browser LocalStorage with Audit Trail & Satellite Sync.</p>
+        </footer>
+
     </main>
 
-    <!-- Modal Input / Edit Form -->
+    <!-- Form Input / Edit Modal -->
     <div id="inputModal" class="fixed inset-0 bg-slate-900/60 z-[100] items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 sticky top-0 z-10">
                 <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                    <i data-lucide="clipboard-edit" class="w-5 h-5 text-emerald-600"></i> Form Input / Edit Effective Planted
+                    <i data-lucide="clipboard-edit" class="w-5 h-5 text-emerald-600"></i>
+                    Form Input / Edit Effective Planted
                 </h3>
-                <button id="closeModalBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-md hover:bg-slate-200"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button id="closeModalBtn" class="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-md hover:bg-slate-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
             
             <div class="p-6 overflow-y-auto custom-scrollbar">
-                <div id="formErrorMsg" class="hidden mb-4 p-3 bg-red-50 text-red-600 text-xs border border-red-200 rounded-lg flex items-center gap-2">
-                    <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                <!-- Error Message Box -->
+                <div id="formErrorMsg" class="hidden mb-4 p-3 bg-red-50 text-red-600 text-xs border border-red-200 rounded-lg flex items-start gap-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4 mt-0.5 shrink-0"></i>
                     <span id="formErrorText">Silakan lengkapi form.</span>
                 </div>
 
                 <form id="dailyInputForm" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Grid ID *</label>
-                            <input type="number" id="inputGrid" required class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2.5" placeholder="Ketik Grid ID...">
+                            <label for="inputGrid" class="block text-xs font-semibold text-slate-700 mb-1">Grid ID <span class="text-rose-500">*</span></label>
+                            <input type="number" id="inputGrid" required class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5" placeholder="Ketik Grid ID (misal: 1779)...">
+                            <p class="text-[10px] text-slate-400 mt-1">Jika ID sudah ada, data lama akan otomatis ter-load untuk diedit.</p>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Tipe Project *</label>
-                            <input type="text" id="inputProject" value="EP (Effective Planted)" readonly class="w-full bg-slate-100 border border-slate-300 text-xs rounded-lg p-2.5">
+                            <label for="inputProject" class="block text-xs font-semibold text-slate-700 mb-1">Tipe Project <span class="text-rose-500">*</span></label>
+                            <input type="text" id="inputProject" value="EP (Effective Planted)" readonly class="w-full bg-slate-100 border border-slate-300 text-slate-600 text-xs rounded-lg block p-2.5 cursor-not-allowed">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">PIC (Nama) *</label>
-                            <input type="text" id="inputPIC" list="picSuggestions" required class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2.5" placeholder="Pilih atau ketik PIC...">
+                            <label for="inputPIC" class="block text-xs font-semibold text-slate-700 mb-1">PIC (Nama) <span class="text-rose-500">*</span></label>
+                            <input type="text" id="inputPIC" list="picSuggestions" required class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5" placeholder="Pilih atau ketik nama PIC...">
                             <datalist id="picSuggestions">
-                                <option value="Atika"><option value="Meiva"><option value="Rico"><option value="Galuh">
+                                <option value="Atika">
+                                <option value="Meiva">
+                                <option value="Rico">
+                                <option value="Galuh">
                             </datalist>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Status Pengerjaan *</label>
-                            <select id="inputStatus" required class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2.5">
+                            <label for="inputStatus" class="block text-xs font-semibold text-slate-700 mb-1">Status Pengerjaan <span class="text-rose-500">*</span></label>
+                            <select id="inputStatus" required class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5">
                                 <option value="">Pilih Status...</option>
                                 <option value="Belum dimulai">Belum dimulai</option>
                                 <option value="Dalam proses">Dalam proses</option>
@@ -352,31 +386,31 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Mulai *</label>
-                            <input type="date" id="inputStartDate" required class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2.5">
+                            <label for="inputStartDate" class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Mulai <span class="text-rose-500">*</span></label>
+                            <input type="date" id="inputStartDate" required class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Selesai</label>
-                            <input type="date" id="inputEndDate" class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2.5">
+                            <label for="inputEndDate" class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Selesai</label>
+                            <input type="date" id="inputEndDate" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Prioritas</label>
-                            <select id="inputPrioritas" class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2.5">
+                            <label for="inputPrioritas" class="block text-xs font-semibold text-slate-700 mb-1">Prioritas</label>
+                             <select id="inputPrioritas" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5">
                                 <option value="Mudah">Mudah</option>
                                 <option value="Sedang" selected>Sedang</option>
                                 <option value="Sulit">Sulit</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Estimasi Hari Kerja</label>
-                            <input type="number" id="inputHari" min="0" class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2.5">
+                            <label for="inputHari" class="block text-xs font-semibold text-slate-700 mb-1">Estimasi Hari Kerja</label>
+                            <input type="number" id="inputHari" min="0" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5" placeholder="Misal: 10">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Approval Project</label>
-                            <select id="inputApproval" class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2.5">
+                            <label for="inputApproval" class="block text-xs font-semibold text-slate-700 mb-1">Approval Project</label>
+                             <select id="inputApproval" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5">
                                 <option value="">- Belum ada -</option>
                                 <option value="Lisan">Lisan</option>
                                 <option value="Purwandari">Purwandari</option>
@@ -385,135 +419,162 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan / Keterangan Lapangan</label>
-                        <textarea id="inputCatatan" rows="3" class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2.5" placeholder="Tulis catatan..."></textarea>
+                        <label for="inputCatatan" class="block text-xs font-semibold text-slate-700 mb-1">Catatan / Keterangan Lapangan</label>
+                        <textarea id="inputCatatan" rows="3" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5" placeholder="Tuliskan kendala basemap, awan, atau catatan revisi..."></textarea>
                     </div>
                 </form>
             </div>
             
-            <div class="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
-                <button type="button" id="cancelSubmitBtn" class="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg">Batal</button>
-                <button type="button" id="saveSubmitBtn" class="px-4 py-2 text-xs font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 flex items-center gap-1.5">
-                    <i data-lucide="save" class="w-4 h-4"></i> Simpan ke Google Sheets
+            <div class="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-end gap-3 sticky bottom-0 z-10">
+                <button type="button" id="cancelSubmitBtn" class="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50">Batal</button>
+                <button type="button" id="saveSubmitBtn" class="px-4 py-2 text-xs font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 shadow-xs flex items-center gap-1.5">
+                    <i data-lucide="save" class="w-4 h-4"></i> Simpan Data
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- History Audit Modal -->
+    <!-- History Audit Trail Modal -->
     <div id="historyModal" class="fixed inset-0 bg-slate-900/60 z-[100] items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
                 <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                    <i data-lucide="history" class="w-5 h-5 text-sky-600"></i> Histori & Audit Trail
+                    <i data-lucide="history" class="w-5 h-5 text-sky-600"></i>
+                    Histori & Audit Trail Perubahan Data
                 </h3>
-                <button id="closeHistoryBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-md"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button id="closeHistoryBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-md hover:bg-slate-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
             <div class="p-6 overflow-y-auto custom-scrollbar">
-                <table class="w-full text-xs text-left text-slate-600">
-                    <thead class="bg-slate-100 uppercase">
-                        <tr><th class="p-2.5">Waktu</th><th class="p-2.5">Aksi</th><th class="p-2.5">Grid ID</th><th class="p-2.5">Detail</th></tr>
-                    </thead>
-                    <tbody id="historyTableBody" class="divide-y divide-slate-100"></tbody>
-                </table>
+                <p class="text-xs text-slate-500 mb-4">Catatan seluruh aktivitas edit, input, atau penghapusan grid pada dashboard Effective Planted.</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left text-slate-600">
+                        <thead class="bg-slate-100 text-slate-700 uppercase">
+                            <tr>
+                                <th class="p-2.5">Waktu</th>
+                                <th class="p-2.5">Aksi</th>
+                                <th class="p-2.5">Grid ID</th>
+                                <th class="p-2.5">Detail Perubahan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody" class="divide-y divide-slate-100">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-end">
-                <button id="closeHistoryModalBtn" class="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg">Tutup</button>
+            <div class="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-between items-center">
+                <button id="clearHistoryBtn" class="text-xs text-rose-600 hover:underline">Bersihkan Histori</button>
+                <button id="closeHistoryModalBtn" class="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50">Tutup</button>
             </div>
         </div>
     </div>
 
-    <!-- Guide Modal -->
+    <!-- Guide & Customization Modal -->
     <div id="guideModal" class="fixed inset-0 bg-slate-900/60 z-[100] items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
                 <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                    <i data-lucide="book-open" class="w-5 h-5 text-indigo-600"></i> Panduan Google Sheets & Sinkronisasi
+                    <i data-lucide="book-open" class="w-5 h-5 text-indigo-600"></i>
+                    Panduan Akses, Sinkronisasi Antar User & Kustomisasi Mandiri
                 </h3>
-                <button id="closeGuideBtn" class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button id="closeGuideBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-md hover:bg-slate-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
             <div class="p-6 overflow-y-auto custom-scrollbar space-y-4 text-xs text-slate-600 leading-relaxed">
+                <div class="bg-sky-50 border border-sky-100 p-4 rounded-xl">
+                    <h4 class="font-bold text-sky-900 text-sm mb-1 flex items-center gap-2">
+                        <i data-lucide="users" class="w-4 h-4 text-sky-600"></i>
+                        1. Apakah Data Antar User Saling Terhubung?
+                    </h4>
+                    <p><strong>Secara Default (LocalStorage):</strong> Data tersimpan secara lokal di browser komputer masing-masing. Artinya, jika rekan tim membuka file ini di perangkat atau browser lain, data mereka masih terpisah.</p>
+                    <p class="mt-1"><strong>Agar Terhubung Secara Real-Time (Cloud Sync):</strong> Anda dapat menghubungkan file HTML ini ke database cloud gratis (seperti Firebase Firestore) atau Google Apps Script (terhubung ke Google Sheets). Dengan cara ini, semua rekan tim yang membuka link yang sama akan melihat data yang tersinkron otomatis secara real-time.</p>
+                </div>
+
+                <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-xl">
+                    <h4 class="font-bold text-indigo-900 text-sm mb-1 flex items-center gap-2">
+                        <i data-lucide="code" class="w-4 h-4 text-indigo-600"></i>
+                        2. Cara Kustomisasi Mandiri & Pengembangan
+                    </h4>
+                    <p>File ini dibuat menggunakan format <strong>Single-File HTML</strong> (HTML, CSS Tailwind, dan JavaScript bersatu). Anda dapat menyimpan file ini (misalnya sebagai `dashboard.html`), membukanya menggunakan text editor apa saja (seperti VS Code, Notepad++, atau Sublime Text), dan mengubah atau mengembangkan kodenya kapan saja.</p>
+                </div>
+
                 <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl">
-                    <h4 class="font-bold text-emerald-900 text-sm mb-1">Status Koneksi Google Sheets</h4>
-                    <p>Dashboard ini sekarang terhubung otomatis dengan Web App Google Apps Script Anda. Setiap penambahan atau perubahan data akan langsung tersimpan di Google Spreadsheet secara real-time dan mencatat akun editor.</p>
+                    <h4 class="font-bold text-emerald-900 text-sm mb-1 flex items-center gap-2">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+                        3. Cara Akses Terbatas & Hosting
+                    </h4>
+                    <p>Untuk akses terbatas, Anda bisa mengunggah file ini ke server internal perusahaan (Intranet), GitLab Pages dengan password protection, atau layanan web hosting gratis (seperti Netlify / Vercel) dengan menyembunyikan tautannya dari publik.</p>
                 </div>
             </div>
             <div class="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-end">
-                <button id="closeGuideModalBtn" class="px-4 py-2 text-xs font-medium text-white bg-indigo-600 rounded-lg">Tutup</button>
+                <button id="closeGuideModalBtn" class="px-4 py-2 text-xs font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">Mengerti & Tutup</button>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
+    <!-- Notification Toast -->
     <div id="toast" class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 z-[110]">
         <i data-lucide="check-circle" class="w-5 h-5"></i>
-        <span class="font-medium text-xs" id="toastText">Berhasil!</span>
+        <span class="font-medium text-xs" id="toastText">Data berhasil disimpan!</span>
     </div>
 
     <script>
+        // Initialize Lucide Icons
         lucide.createIcons();
 
-        // Google Apps Script Web App URL
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw1P97L6CT2p3eSuMRgGZxnD8GTxxL_wEvHx5fJQ7cqP-R8SaSgKzQHdnq1d9_kkv8dEw/exec";
+        // Storage Keys
+        const STORAGE_KEY = 'EFFECTIVE_PLANTED_EXACT_DATA_V8';
+        const HISTORY_KEY = 'EFFECTIVE_PLANTED_HISTORY_V8';
 
-        let MOCK_DATA = [];
-        let AUDIT_HISTORY = [];
+        // Exact Dataset from Spreadsheet Image (Cleaned & Standardized)
+        const EXACT_INITIAL_DATA = [
+            { "Grid": 1779, "Project": "EP", "Prioritas": "Mudah", "PIC": "Atika", "Status": "Koreksi", "Tanggal Mulai": "2026-09-02", "Tanggal Akhir": "2026-09-16", "Hari Kerja": 11, "Approval": "Purwandari", "Catatan": "Acuan basemap imagery, google earth, banyak yang tertutup awan, buram." },
+            { "Grid": 1873, "Project": "EP", "Prioritas": "Sedang", "PIC": "Meiva", "Status": "Koreksi", "Tanggal Mulai": "2026-09-02", "Tanggal Akhir": "2026-09-15", "Hari Kerja": 10, "Approval": "Lisan", "Catatan": "Banyak sawit yang belum terdigitasi otomatis, jadi melakukan digitasi manual untuk wilayah sawit yang belum terdigitasi" },
+            { "Grid": 1972, "Project": "EP", "Prioritas": "Mudah", "PIC": "Rico", "Status": "Selesai", "Tanggal Mulai": "2026-09-02", "Tanggal Akhir": "2026-09-14", "Hari Kerja": 9, "Approval": "Purwandari", "Catatan": "basemap tidak terlihat jelas karena signal" },
+            { "Grid": 1500, "Project": "EP", "Prioritas": "Sedang", "PIC": "Galuh", "Status": "Koreksi", "Tanggal Mulai": "2026-09-02", "Tanggal Akhir": "2026-09-15", "Hari Kerja": 10, "Approval": "Lisan", "Catatan": "basemap ada yang buram dan tertutup awan" },
+            { "Grid": 1687, "Project": "EP", "Prioritas": "Sulit", "PIC": "Atika", "Status": "Selesai", "Tanggal Mulai": "2026-09-17", "Tanggal Akhir": "2026-10-02", "Hari Kerja": 12, "Approval": "Purwandari", "Catatan": "Banyak sawit yang belum terdigitasi otomatis" },
+            { "Grid": 1688, "Project": "EP", "Prioritas": "Sedang", "PIC": "Atika", "Status": "Belum dimulai", "Tanggal Mulai": "", "Tanggal Akhir": "", "Hari Kerja": 0, "Approval": "", "Catatan": "Keterangan" },
+            { "Grid": 1780, "Project": "EP", "Prioritas": "Sedang", "PIC": "Atika", "Status": "Dalam proses", "Tanggal Mulai": "2026-10-02", "Tanggal Akhir": "2026-10-07", "Hari Kerja": 4, "Approval": "Lisan", "Catatan": "Keterangan" },
+            { "Grid": 1501, "Project": "EP", "Prioritas": "Sulit", "PIC": "Galuh", "Status": "Dalam proses", "Tanggal Mulai": "2026-10-02", "Tanggal Akhir": "2026-10-07", "Hari Kerja": 4, "Approval": "Purwandari", "Catatan": "Keterangan" },
+            { "Grid": 1502, "Project": "EP", "Prioritas": "Sedang", "PIC": "Galuh", "Status": "Selesai", "Tanggal Mulai": "2026-09-17", "Tanggal Akhir": "2026-10-02", "Hari Kerja": 12, "Approval": "Lisan", "Catatan": "Keterangan" },
+            { "Grid": 1783, "Project": "EP", "Prioritas": "Mudah", "PIC": "Galuh", "Status": "Selesai", "Tanggal Mulai": "2026-07-07", "Tanggal Akhir": "2026-07-17", "Hari Kerja": 6, "Approval": "Purwandari", "Catatan": "Sakit" },
+            { "Grid": 1874, "Project": "EP", "Prioritas": "Sulit", "PIC": "Meiva", "Status": "Dalam proses", "Tanggal Mulai": "2026-09-29", "Tanggal Akhir": "2026-10-07", "Hari Kerja": 7, "Approval": "Lisan", "Catatan": "Keterangan" },
+            { "Grid": 1973, "Project": "EP", "Prioritas": "Sedang", "PIC": "Meiva", "Status": "Hold", "Tanggal Mulai": "2026-09-15", "Tanggal Akhir": "2026-09-30", "Hari Kerja": 12, "Approval": "Purwandari", "Catatan": "Membantu Tim Country (Bu Astri) database untuk digitasi batas Boundary PKS (21-28)" },
+            { "Grid": 2075, "Project": "EP", "Prioritas": "Sedang", "PIC": "Meiva", "Status": "Belum dimulai", "Tanggal Mulai": "", "Tanggal Akhir": "", "Hari Kerja": 0, "Approval": "", "Catatan": "Keterangan" },
+            { "Grid": 1781, "Project": "EP", "Prioritas": "Sedang", "PIC": "Rico", "Status": "Dalam proses", "Tanggal Mulai": "2026-09-28", "Tanggal Akhir": "2026-10-07", "Hari Kerja": 8, "Approval": "Lisan", "Catatan": "Keterangan" },
+            { "Grid": 1974, "Project": "EP", "Prioritas": "Sulit", "PIC": "Rico", "Status": "Belum dimulai", "Tanggal Mulai": "", "Tanggal Akhir": "", "Hari Kerja": 0, "Approval": "", "Catatan": "Keterangan" },
+            { "Grid": 2074, "Project": "EP", "Prioritas": "Mudah", "PIC": "Rico", "Status": "Koreksi", "Tanggal Mulai": "2026-09-14", "Tanggal Akhir": "2026-09-25", "Hari Kerja": 10, "Approval": "Purwandari", "Catatan": "Membantu Pak Budi Pembuatan script WA untuk verifikasi kebakaran" },
+            { "Grid": 1693, "Project": "EP", "Prioritas": "Sedang", "PIC": "Galuh", "Status": "Belum dimulai", "Tanggal Mulai": "", "Tanggal Akhir": "", "Hari Kerja": 0, "Approval": "", "Catatan": "Keterangan" },
+            { "Grid": 1694, "Project": "EP", "Prioritas": "Sedang", "PIC": "Rico", "Status": "Belum dimulai", "Tanggal Mulai": "", "Tanggal Akhir": "", "Hari Kerja": 0, "Approval": "", "Catatan": "Keterangan" },
+            { "Grid": 1695, "Project": "EP", "Prioritas": "Sedang", "PIC": "Atika", "Status": "Belum dimulai", "Tanggal Mulai": "", "Tanggal Akhir": "", "Hari Kerja": 0, "Approval": "", "Catatan": "Keterangan" },
+            { "Grid": 1784, "Project": "EP", "Prioritas": "Sedang", "PIC": "Meiva", "Status": "Belum dimulai", "Tanggal Mulai": "", "Tanggal Akhir": "", "Hari Kerja": 0, "Approval": "", "Catatan": "Keterangan" },
+            { "Grid": 2072, "Project": "EP", "Prioritas": "Mudah", "PIC": "Meiva", "Status": "Belum dimulai", "Tanggal Mulai": "", "Tanggal Akhir": "", "Hari Kerja": 0, "Approval": "", "Catatan": "Keterangan" },
+            { "Grid": 1691, "Project": "EP", "Prioritas": "Sulit", "PIC": "Galuh", "Status": "Belum dimulai", "Tanggal Mulai": "", "Tanggal Akhir": "", "Hari Kerja": 0, "Approval": "", "Catatan": "Keterangan" },
+            { "Grid": 1692, "Project": "EP", "Prioritas": "Sulit", "PIC": "Rico", "Status": "Belum dimulai", "Tanggal Mulai": "", "Tanggal Akhir": "", "Hari Kerja": 0, "Approval": "", "Catatan": "Keterangan" },
+            { "Grid": 1785, "Project": "EP", "Prioritas": "Sulit", "PIC": "Atika", "Status": "Belum dimulai", "Tanggal Mulai": "", "Tanggal Akhir": "", "Hari Kerja": 0, "Approval": "", "Catatan": "Keterangan" }
+        ];
+
+        let MOCK_DATA = JSON.parse(localStorage.getItem(STORAGE_KEY)) || EXACT_INITIAL_DATA;
+        let AUDIT_HISTORY = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [
+            { "timestamp": "02 Jan 2026 09:00", "action": "INITIAL", "grid": "ALL", "desc": "Memuat data Effective Planted" }
+        ];
+
         let charts = {};
 
-        // Fetch data from Google Sheets on load
-        async function fetchFromGoogleSheets() {
-            showToast("Menghubungkan ke Google Sheets...");
-            try {
-                const response = await fetch(WEB_APP_URL);
-                const result = await response.json();
-                if(result.status === "success" && Array.isArray(result.data)) {
-                    MOCK_DATA = result.data.map(item => ({
-                        Grid: Number(item["Grid ID"]) || Number(item["Grid"]),
-                        Project: item["Project"] || "EP",
-                        PIC: item["PIC"] || "",
-                        Prioritas: item["Prioritas"] || "Sedang",
-                        Status: item["Status"] || "Belum dimulai",
-                        "Tanggal Mulai": item["Tanggal Mulai"] ? String(item["Tanggal Mulai"]).substring(0, 10) : "",
-                        "Tanggal Akhir": item["Tanggal Akhir"] ? String(item["Tanggal Akhir"]).substring(0, 10) : "",
-                        "Hari Kerja": Number(item["Hari Kerja"]) || 0,
-                        Approval: item["Approval"] || "",
-                        Catatan: item["Keterangan"] || item["Catatan"] || ""
-                    }));
-                    initDashboard();
-                    showToast("Data berhasil disinkronkan dari Google Sheets!");
-                }
-            } catch (err) {
-                console.warn("Gagal terhubung ke Google Sheets, menggunakan data cadangan lokal:", err);
-                showToast("Gagal sync online, menggunakan mode lokal.");
-                initDashboard();
-            }
-        }
-
-        // Send data to Google Sheets
-        async function sendToGoogleSheets(payload, action = 'save') {
-            try {
-                const response = await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: action, data: payload })
-                });
-                const result = await response.json();
-                if(result.status === 'success') {
-                    showToast(`Berhasil disimpan! Editor: ${result.user || 'Tim'}`);
-                    fetchFromGoogleSheets(); // Refresh data from sheet
-                } else {
-                    alert("Gagal menyimpan ke Google Sheets: " + result.message);
-                }
-            } catch (err) {
-                console.error("Error posting to Google:", err);
-                alert("Terjadi kesalahan koneksi saat mengirim data ke Google Sheets.");
-            }
+        function saveToStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(MOCK_DATA));
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(AUDIT_HISTORY));
         }
 
         function logHistory(action, gridId, desc) {
             const now = new Date();
             const timeStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             AUDIT_HISTORY.unshift({ timestamp: timeStr, action, grid: gridId, desc });
-            renderHistoryTable();
+            if(AUDIT_HISTORY.length > 50) AUDIT_HISTORY.pop();
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(AUDIT_HISTORY));
         }
 
         function formatDate(dateStr) {
@@ -523,16 +584,46 @@
             return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
         }
 
+        function getWeekNumber(d) {
+            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+            var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+            return d.getUTCFullYear() + "-W" + String(weekNo).padStart(2, '0');
+        }
+
+        // --- Filter Logic ---
         function getFilteredData() {
             const period = document.getElementById('filterPeriod').value;
             const picFilter = document.getElementById('filterPic').value;
 
             return MOCK_DATA.filter(item => {
+                // PIC filter
                 if(picFilter && item.PIC !== picFilter) return false;
+
+                // Period filter
+                if(period === 'month') {
+                    const selectedMonth = document.getElementById('filterMonthInput').value; // e.g. "2026-09"
+                    if(!selectedMonth || !item['Tanggal Mulai']) return false;
+                    return item['Tanggal Mulai'].startsWith(selectedMonth);
+                } else if(period === 'week') {
+                    const selectedWeek = document.getElementById('filterWeekInput').value; // e.g. "2026-W36"
+                    if(!selectedWeek || !item['Tanggal Mulai']) return false;
+                    const itemDate = new Date(item['Tanggal Mulai']);
+                    if(isNaN(itemDate)) return false;
+                    return getWeekNumber(itemDate) === selectedWeek;
+                } else if(period === 'custom') {
+                    const start = document.getElementById('filterStartDate').value;
+                    const end = document.getElementById('filterEndDate').value;
+                    if(!start || !end || !item['Tanggal Mulai']) return true;
+                    return item['Tanggal Mulai'] >= start && item['Tanggal Mulai'] <= end;
+                }
+
                 return true;
             });
         }
 
+        // --- Data Processor ---
         function processData(data) {
             const totalGrid = data.length;
             const gridSelesai = data.filter(d => (d.Status || '').toLowerCase() === 'selesai').length;
@@ -541,8 +632,11 @@
             let totalHari = 0;
             data.forEach(d => totalHari += (Number(d['Hari Kerja']) || 0));
 
+            // KPI per PIC
             const kpiData = {};
-            officialPics.forEach(pic => { kpiData[pic] = { total: 0, selesai: 0, targetHari: 0 }; });
+            officialPics.forEach(pic => {
+                kpiData[pic] = { total: 0, selesai: 0, targetHari: 0 };
+            });
 
             data.forEach(d => {
                 const picName = (d.PIC || '').trim();
@@ -558,25 +652,36 @@
                 p.completionRate = p.total > 0 ? Math.round((p.selesai / p.total) * 100) : 0;
             });
 
+            // Status counts for Pie Chart
             const statusOrder = ['Belum dimulai', 'Koreksi', 'Selesai', 'Dalam proses', 'Hold'];
             const statusCount = {};
-            data.forEach(d => { statusCount[d.Status] = (statusCount[d.Status] || 0) + 1; });
+            data.forEach(d => {
+                const stat = d.Status || 'Unknown';
+                statusCount[stat] = (statusCount[stat] || 0) + 1;
+            });
             const statusData = Object.keys(statusCount).map(k => ({ name: k, value: statusCount[k] }))
                 .sort((a, b) => statusOrder.indexOf(a.name) - statusOrder.indexOf(b.name));
 
+            // PIC workload
             const picCount = {};
             officialPics.forEach(p => picCount[p] = 0);
-            data.forEach(d => { if(picCount[d.PIC] !== undefined) picCount[d.PIC]++; });
+            data.forEach(d => { 
+                const pName = (d.PIC || '').trim();
+                if(picCount[pName] !== undefined) picCount[pName]++; 
+            });
             const picData = officialPics.map(p => ({ name: p, value: picCount[p] }));
 
+            // Priority distribution
             const priorityOrder = ['Sedang', 'Sulit', 'Mudah'];
             const priorityCount = {};
             data.forEach(d => { if(d.Prioritas) priorityCount[d.Prioritas] = (priorityCount[d.Prioritas] || 0) + 1; });
             const priorityData = Object.keys(priorityCount).map(k => ({ name: k, value: priorityCount[k] }))
                 .sort((a, b) => priorityOrder.indexOf(a.name) - priorityOrder.indexOf(b.name));
 
+            // Days per PIC
             const daysData = officialPics.map(p => ({ name: p, value: kpiData[p].targetHari }));
 
+            // Monthly Trend Recap
             const monthlyDataMap = {};
             data.forEach(d => {
                 if(!d['Tanggal Mulai']) return;
@@ -586,18 +691,20 @@
             const sortedMonths = Object.keys(monthlyDataMap).sort();
             const monthlyLabels = sortedMonths.map(ym => {
                 const [y, m] = ym.split('-');
-                return new Date(y, m-1).toLocaleString('id-ID', { month: 'short', year: 'numeric' });
+                const d = new Date(y, m-1);
+                return d.toLocaleString('id-ID', { month: 'short', year: 'numeric' });
             });
             const monthlyValues = sortedMonths.map(ym => monthlyDataMap[ym]);
 
             return {
-                metrics: { totalGrid, gridSelesai, totalHari },
+                metrics: { totalGrid, gridSelesai, totalPekerja: officialPics.length, totalHari },
                 kpi: kpiData,
                 charts: { statusData, picData, priorityData, daysData },
                 monthly: { labels: monthlyLabels, values: monthlyValues }
             };
         }
 
+        // --- Render UI Components ---
         function updateMetrics(metrics) {
             document.getElementById('metricTotalGrid').textContent = metrics.totalGrid;
             document.getElementById('metricGridSelesai').textContent = metrics.gridSelesai;
@@ -610,119 +717,222 @@
             const container = document.getElementById('kpiContainer');
             container.innerHTML = '';
             const avatarColors = ['bg-emerald-100 text-emerald-700', 'bg-teal-100 text-teal-700', 'bg-sky-100 text-sky-700', 'bg-indigo-100 text-indigo-700'];
-            let colorIdx = 0;
 
+            let colorIdx = 0;
             Object.keys(kpiData).forEach(pic => {
                 const data = kpiData[pic];
-                const avatarColor = avatarColors[colorIdx++ % avatarColors.length];
+                const avatarColor = avatarColors[colorIdx % avatarColors.length];
+                colorIdx++;
+                const initial = pic.charAt(0).toUpperCase();
                 let pbColor = data.completionRate >= 75 ? 'bg-emerald-500' : data.completionRate >= 25 ? 'bg-amber-500' : 'bg-rose-500';
 
-                container.insertAdjacentHTML('beforeend', `
-                    <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4">
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-base ${avatarColor}">${pic.charAt(0)}</div>
-                            <div><h4 class="font-bold text-slate-800 text-sm">${pic}</h4><p class="text-[11px] text-slate-400">PIC Effective Planted</p></div>
+                const cardHtml = `
+                    <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 hover:border-emerald-300 transition-colors relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-16 h-16 rounded-full bg-slate-50 z-0"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-base ${avatarColor}">${initial}</div>
+                                <div><h4 class="font-bold text-slate-800 text-sm leading-tight">${pic}</h4><p class="text-[11px] text-slate-400">PIC Effective Planted</p></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <div class="bg-slate-50 p-2 rounded-lg text-center border border-slate-100">
+                                    <p class="text-[10px] uppercase font-bold text-slate-400 mb-0.5">Selesai</p>
+                                    <p class="text-base font-bold text-slate-700">${data.selesai} <span class="text-xs text-slate-400 font-normal">/ ${data.total}</span></p>
+                                </div>
+                                <div class="bg-slate-50 p-2 rounded-lg text-center border border-slate-100">
+                                    <p class="text-[10px] uppercase font-bold text-slate-400 mb-0.5">Est. Hari</p>
+                                    <p class="text-base font-bold text-slate-700">${data.targetHari}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="font-medium text-slate-600">Completion</span>
+                                    <span class="font-bold ${pbColor.replace('bg-', 'text-')}">${data.completionRate}%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                    <div class="${pbColor} h-1.5 rounded-full transition-all duration-1000" style="width: ${data.completionRate}%"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <div class="bg-slate-50 p-2 rounded-lg text-center border border-slate-100">
-                                <p class="text-[10px] uppercase font-bold text-slate-400">Selesai</p>
-                                <p class="text-base font-bold text-slate-700">${data.selesai} <span class="text-xs text-slate-400">/ ${data.total}</span></p>
-                            </div>
-                            <div class="bg-slate-50 p-2 rounded-lg text-center border border-slate-100">
-                                <p class="text-[10px] uppercase font-bold text-slate-400">Est. Hari</p>
-                                <p class="text-base font-bold text-slate-700">${data.targetHari}</p>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-xs mb-1">
-                                <span class="font-medium text-slate-600">Completion</span>
-                                <span class="font-bold">${data.completionRate}%</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5">
-                                <div class="${pbColor} h-1.5 rounded-full" style="width: ${data.completionRate}%"></div>
-                            </div>
-                        </div>
-                    </div>
-                `);
+                    </div>`;
+                container.insertAdjacentHTML('beforeend', cardHtml);
             });
         }
 
-        function renderCharts(chartData, monthlyData) {
-            const statusColorsMap = { 'Belum dimulai': '#4338ca', 'Koreksi': '#336688', 'Selesai': '#10b981', 'Dalam proses': '#38bdf8', 'Hold': '#f59e0b' };
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#64748b';
 
-            // Pie Chart
-            if(charts['statusPieChart']) charts['statusPieChart'].destroy();
-            charts['statusPieChart'] = new Chart(document.getElementById('statusPieChart').getContext('2d'), {
+        function renderCharts(chartData, monthlyData) {
+            // 1. Status Pie/Doughnut Chart
+            const pieCtx = document.getElementById('statusPieChart').getContext('2d');
+            if (charts['statusPieChart']) charts['statusPieChart'].destroy();
+            
+            const statusColorsMap = { 'Belum dimulai': '#4338ca', 'Koreksi': '#336688', 'Selesai': '#10b981', 'Dalam proses': '#38bdf8', 'Hold': '#f59e0b' };
+            charts['statusPieChart'] = new Chart(pieCtx, {
                 type: 'doughnut',
                 data: {
                     labels: chartData.statusData.map(d => d.name),
-                    datasets: [{ data: chartData.statusData.map(d => d.value), backgroundColor: chartData.statusData.map(d => statusColorsMap[d.name] || '#94a3b8') }]
+                    datasets: [{
+                        data: chartData.statusData.map(d => d.value),
+                        backgroundColor: chartData.statusData.map(d => statusColorsMap[d.name] || '#94a3b8'),
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+                        tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', cornerRadius: 8 }
+                    },
+                    cutout: '60%'
+                }
             });
 
-            // PIC Bar Chart
-            if(charts['picChart']) charts['picChart'].destroy();
-            charts['picChart'] = new Chart(document.getElementById('picChart').getContext('2d'), {
+            // 2. PIC Workload Bar Chart
+            const picCtx = document.getElementById('picChart').getContext('2d');
+            if (charts['picChart']) charts['picChart'].destroy();
+            charts['picChart'] = new Chart(picCtx, {
                 type: 'bar',
-                data: { labels: chartData.picData.map(d => d.name), datasets: [{ label: 'Grid', data: chartData.picData.map(d => d.value), backgroundColor: '#10b981', borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                data: {
+                    labels: chartData.picData.map(d => d.name),
+                    datasets: [{ label: 'Grid', data: chartData.picData.map(d => d.value), backgroundColor: ['#10b981', '#06b6d4', '#3b82f6', '#6366f1'], borderRadius: 6, barPercentage: 0.6 }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', cornerRadius: 8 } },
+                    scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { precision: 0 } }, x: { grid: { display: false } } }
+                }
             });
 
-            // Priority Bar Chart
-            if(charts['priorityChart']) charts['priorityChart'].destroy();
-            charts['priorityChart'] = new Chart(document.getElementById('priorityChart').getContext('2d'), {
+            // 3. Priority Bar Chart
+            const prioCtx = document.getElementById('priorityChart').getContext('2d');
+            if (charts['priorityChart']) charts['priorityChart'].destroy();
+            charts['priorityChart'] = new Chart(prioCtx, {
                 type: 'bar',
-                data: { labels: chartData.priorityData.map(d => d.name), datasets: [{ label: 'Grid', data: chartData.priorityData.map(d => d.value), backgroundColor: ['#7c3aed', '#e11d48', '#fb923c'], borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                data: {
+                    labels: chartData.priorityData.map(d => d.name),
+                    datasets: [{ label: 'Grid', data: chartData.priorityData.map(d => d.value), backgroundColor: chartData.priorityData.map(d => d.name === 'Sulit' ? '#e11d48' : d.name === 'Sedang' ? '#7c3aed' : '#fb923c'), borderRadius: 6, barPercentage: 0.6 }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', cornerRadius: 8 } },
+                    scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { precision: 0 } }, x: { grid: { display: false } } }
+                }
             });
 
-            // Days Bar Chart
-            if(charts['daysChart']) charts['daysChart'].destroy();
-            charts['daysChart'] = new Chart(document.getElementById('daysChart').getContext('2d'), {
+            // 4. Days per PIC Bar Chart
+            const daysCtx = document.getElementById('daysChart').getContext('2d');
+            if (charts['daysChart']) charts['daysChart'].destroy();
+            charts['daysChart'] = new Chart(daysCtx, {
                 type: 'bar',
-                data: { labels: chartData.daysData.map(d => d.name), datasets: [{ label: 'Hari Kerja', data: chartData.daysData.map(d => d.value), backgroundColor: '#059669', borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                data: {
+                    labels: chartData.daysData.map(d => d.name),
+                    datasets: [{ label: 'Hari Kerja', data: chartData.daysData.map(d => d.value), backgroundColor: ['#059669', '#10b981', '#34d399', '#6ee7b7'], borderRadius: 6, barPercentage: 0.6 }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', cornerRadius: 8 } },
+                    scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { precision: 0 } }, x: { grid: { display: false } } }
+                }
             });
 
-            // Monthly Trend Chart
-            if(charts['monthlyTrendChart']) charts['monthlyTrendChart'].destroy();
-            charts['monthlyTrendChart'] = new Chart(document.getElementById('monthlyTrendChart').getContext('2d'), {
+            // 5. Monthly Trend Chart (Bar & Line Combo)
+            const trendCtx = document.getElementById('monthlyTrendChart').getContext('2d');
+            if (charts['monthlyTrendChart']) charts['monthlyTrendChart'].destroy();
+            charts['monthlyTrendChart'] = new Chart(trendCtx, {
                 type: 'bar',
                 data: {
                     labels: monthlyData.labels,
                     datasets: [
-                        { type: 'bar', label: 'Jumlah Grid', data: monthlyData.values, backgroundColor: '#10b981', borderRadius: 6, order: 2 },
-                        { type: 'line', label: 'Tren', data: monthlyData.values, borderColor: '#3b82f6', borderWidth: 3, order: 1 }
+                        { type: 'bar', label: 'Jumlah Grid', data: monthlyData.values, backgroundColor: '16, 185, 129', borderColor: '#059669', borderWidth: 1, borderRadius: 6, order: 2 },
+                        { type: 'line', label: 'Tren', data: monthlyData.values, borderColor: '#3b82f6', backgroundColor: '#3b82f6', borderWidth: 3, tension: 0.3, order: 1 }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false }
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', align: 'end', labels: { boxWidth: 10, font: { size: 11 } } },
+                        tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', cornerRadius: 8 }
+                    },
+                    scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { precision: 0 } }, x: { grid: { display: false } } }
+                }
             });
+        }
+
+        function getStatusBadge(status) {
+            const baseClass = "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border";
+            switch (status) {
+                case 'Selesai': return `<span class="${baseClass} bg-emerald-100 text-emerald-800 border-emerald-200"><i data-lucide="check" class="w-3 h-3"></i> ${status}</span>`;
+                case 'Koreksi': return `<span class="${baseClass} bg-blue-100 text-blue-800 border-blue-200"><i data-lucide="edit-2" class="w-3 h-3"></i> ${status}</span>`;
+                case 'Dalam proses': return `<span class="${baseClass} bg-sky-100 text-sky-800 border-sky-200"><i data-lucide="loader" class="w-3 h-3 animate-spin"></i> ${status}</span>`;
+                case 'Belum dimulai': return `<span class="${baseClass} bg-slate-100 text-slate-700 border-slate-200"><i data-lucide="clock" class="w-3 h-3"></i> ${status}</span>`;
+                case 'Hold': return `<span class="${baseClass} bg-amber-100 text-amber-800 border-amber-200"><i data-lucide="pause" class="w-3 h-3"></i> ${status}</span>`;
+                default: return `<span class="${baseClass} bg-gray-100 text-gray-700 border-gray-200">${status || '-'}</span>`;
+            }
+        }
+
+        function getPriorityBadge(priority) {
+            const baseClass = "inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold";
+            switch (priority) {
+                case 'Sulit': return `<span class="${baseClass} bg-rose-100 text-rose-800 border border-rose-200">${priority}</span>`;
+                case 'Sedang': return `<span class="${baseClass} bg-purple-100 text-purple-800 border border-purple-200">${priority}</span>`;
+                case 'Mudah': return `<span class="${baseClass} bg-orange-100 text-orange-800 border border-orange-200">${priority}</span>`;
+                default: return `<span class="${baseClass} bg-slate-100 text-slate-700">${priority || '-'}</span>`;
+            }
         }
 
         function renderTable(data) {
             const tbody = document.getElementById('tableBody');
-            document.getElementById('tableRowCount').textContent = data.length;
+            
+            // Apply table specific date filter if active
+            const tableStart = document.getElementById('tableFilterStart').value;
+            const tableEnd = document.getElementById('tableFilterEnd').value;
+            
+            let filteredData = data;
+            if (tableStart || tableEnd) {
+                filteredData = data.filter(row => {
+                    const rowStart = row['Tanggal Mulai'];
+                    if (!rowStart) return false;
+                    if (tableStart && rowStart < tableStart) return false;
+                    if (tableEnd && rowStart > tableEnd) return false;
+                    return true;
+                });
+            }
+
+            document.getElementById('tableRowCount').textContent = filteredData.length;
+            const displayData = [...filteredData].reverse();
             tbody.innerHTML = '';
             
-            [...data].reverse().forEach((row, index) => {
+            displayData.forEach((row, index) => {
                 const tr = document.createElement('tr');
                 tr.className = "bg-white hover:bg-slate-50 transition-colors";
+                
+                const projBadge = `<span class="text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[11px] font-bold">Effective Planted</span>`;
+                const dateStr = `${formatDate(row['Tanggal Mulai'])} - ${formatDate(row['Tanggal Akhir'])}`;
+                const approvalBadge = row.Approval 
+                    ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200"><i data-lucide="shield-check" class="w-3 h-3"></i> ${row.Approval}</span>` 
+                    : `<span class="text-[11px] text-slate-400 italic">Pending</span>`;
+
                 tr.innerHTML = `
-                    <td class="px-3 py-3 text-slate-400">${index + 1}</td>
+                    <td class="px-3 py-3 font-medium text-slate-400">${index + 1}</td>
                     <td class="px-3 py-3 font-bold text-slate-800">#${row.Grid}</td>
-                    <td class="px-3 py-3"><span class="text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border text-[11px] font-bold">Effective Planted</span></td>
-                    <td class="px-3 py-3">${row.PIC || '-'}</td>
-                    <td class="px-3 py-3">${row.Prioritas || '-'}</td>
-                    <td class="px-3 py-3">${row.Status || '-'}</td>
-                    <td class="px-3 py-3 text-slate-600">${formatDate(row['Tanggal Mulai'])} - ${formatDate(row['Tanggal Akhir'])}</td>
-                    <td class="px-3 py-3 text-right font-medium">${row['Hari Kerja'] || 0}</td>
-                    <td class="px-3 py-3">${row.Approval || 'Pending'}</td>
-                    <td class="px-3 py-3"><p class="max-w-xs truncate text-slate-500">${row.Catatan || '-'}</p></td>
-                    <td class="px-3 py-3 text-center">
+                    <td class="px-3 py-3 whitespace-nowrap">${projBadge}</td>
+                    <td class="px-3 py-3"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium text-[11px] border border-slate-200"><i data-lucide="user" class="w-3 h-3 text-slate-400"></i> ${row.PIC || '-'}</span></td>
+                    <td class="px-3 py-3">${getPriorityBadge(row.Prioritas)}</td>
+                    <td class="px-3 py-3">${getStatusBadge(row.Status)}</td>
+                    <td class="px-3 py-3 text-slate-600 whitespace-nowrap">${dateStr}</td>
+                    <td class="px-3 py-3 text-right font-medium text-slate-700">${row['Hari Kerja'] || 0}</td>
+                    <td class="px-3 py-3 whitespace-nowrap">${approvalBadge}</td>
+                    <td class="px-3 py-3"><p class="max-w-xs truncate text-slate-500" title="${row.Catatan || '-'}">${row.Catatan || '-'}</p></td>
+                    <td class="px-3 py-3 text-center whitespace-nowrap">
                         <div class="inline-flex items-center gap-1">
-                            <button onclick="editRow(${row.Grid})" class="p-1.5 bg-white text-slate-600 hover:text-emerald-600 rounded border"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
-                            <button onclick="deleteRow(${row.Grid})" class="p-1.5 bg-white text-slate-600 hover:text-rose-600 rounded border"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                            <button onclick="editRow(${row.Grid})" class="p-1.5 bg-white text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded border border-slate-200 shadow-2xs" title="Edit">
+                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <button onclick="deleteRow(${row.Grid})" class="p-1.5 bg-white text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded border border-slate-200 shadow-2xs" title="Hapus">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
                         </div>
                     </td>
                 `;
@@ -734,15 +944,20 @@
         function renderHistoryTable() {
             const tbody = document.getElementById('historyTableBody');
             tbody.innerHTML = '';
+            if(AUDIT_HISTORY.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center p-4 text-slate-400">Belum ada histori perubahan.</td></tr>';
+                return;
+            }
             AUDIT_HISTORY.forEach(h => {
-                tbody.insertAdjacentHTML('beforeend', `
-                    <tr class="hover:bg-slate-50">
-                        <td class="p-2.5 font-mono text-slate-500">${h.timestamp}</td>
-                        <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">${h.action}</span></td>
-                        <td class="p-2.5 font-bold">#${h.grid}</td>
-                        <td class="p-2.5 text-slate-600">${h.desc}</td>
-                    </tr>
-                `);
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50";
+                tr.innerHTML = `
+                    <td class="p-2.5 font-mono text-slate-500 whitespace-nowrap">${h.timestamp}</td>
+                    <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${h.action === 'CREATE' ? 'bg-emerald-100 text-emerald-800' : h.action === 'UPDATE' ? 'bg-sky-100 text-sky-800' : h.action === 'DELETE' ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-700'}">${h.action}</span></td>
+                    <td class="p-2.5 font-bold text-slate-800">#${h.grid}</td>
+                    <td class="p-2.5 text-slate-600">${h.desc}</td>
+                `;
+                tbody.appendChild(tr);
             });
         }
 
@@ -753,83 +968,200 @@
             renderKPI(processed.kpi);
             renderCharts(processed.charts, processed.monthly);
             renderTable(filtered);
+            renderHistoryTable();
         }
 
-        function showToast(msg = "Berhasil!") {
+        // --- Filter Event Listeners ---
+        document.getElementById('filterPeriod').addEventListener('change', function(e) {
+            const val = e.target.value;
+            document.getElementById('monthFilterContainer').classList.toggle('hidden', val !== 'month');
+            document.getElementById('weekFilterContainer').classList.toggle('hidden', val !== 'week');
+            document.getElementById('customDateContainer').classList.toggle('hidden', val !== 'custom');
+            initDashboard();
+        });
+        document.getElementById('filterMonthInput').addEventListener('change', initDashboard);
+        document.getElementById('filterWeekInput').addEventListener('change', initDashboard);
+        document.getElementById('filterStartDate').addEventListener('change', initDashboard);
+        document.getElementById('filterEndDate').addEventListener('change', initDashboard);
+        document.getElementById('filterPic').addEventListener('change', initDashboard);
+        document.getElementById('resetFilterBtn').addEventListener('click', function() {
+            document.getElementById('filterPeriod').value = 'all';
+            document.getElementById('monthFilterContainer').classList.add('hidden');
+            document.getElementById('weekFilterContainer').classList.add('hidden');
+            document.getElementById('customDateContainer').classList.add('hidden');
+            document.getElementById('filterPic').value = '';
+            initDashboard();
+        });
+
+        // Table specific date filter listeners
+        document.getElementById('tableFilterStart').addEventListener('change', () => renderTable(getFilteredData()));
+        document.getElementById('tableFilterEnd').addEventListener('change', () => renderTable(getFilteredData()));
+        document.getElementById('clearTableDateBtn').addEventListener('click', () => {
+            document.getElementById('tableFilterStart').value = '';
+            document.getElementById('tableFilterEnd').value = '';
+            renderTable(getFilteredData());
+        });
+
+        // --- Modal Logic ---
+        const modal = document.getElementById('inputModal');
+        const historyModal = document.getElementById('historyModal');
+        const guideModal = document.getElementById('guideModal');
+        const inputGrid = document.getElementById('inputGrid');
+        const errorBox = document.getElementById('formErrorMsg');
+        const errorText = document.getElementById('formErrorText');
+
+        inputGrid.addEventListener('input', (e) => {
+            const selectedGrid = parseInt(e.target.value);
+            const rowData = MOCK_DATA.find(d => d.Grid === selectedGrid);
+            if(rowData) {
+                document.getElementById('inputPIC').value = rowData.PIC || '';
+                document.getElementById('inputStatus').value = rowData.Status || '';
+                document.getElementById('inputStartDate').value = rowData['Tanggal Mulai'] || '';
+                document.getElementById('inputEndDate').value = rowData['Tanggal Akhir'] || '';
+                document.getElementById('inputPrioritas').value = rowData.Prioritas || 'Sedang';
+                document.getElementById('inputHari').value = rowData['Hari Kerja'] || 0;
+                document.getElementById('inputApproval').value = rowData.Approval || '';
+            }
+        });
+
+        function showModal() {
+            modal.classList.add('active');
+            document.getElementById('dailyInputForm').reset();
+            errorBox.classList.add('hidden');
+        }
+
+        function hideModal() { modal.classList.remove('active'); }
+        
+        window.editRow = function(gridId) {
+            showModal();
+            inputGrid.value = gridId;
+            inputGrid.dispatchEvent(new Event('input'));
+        };
+
+        window.deleteRow = function(gridId) {
+            if(confirm(`Apakah Anda yakin ingin menghapus data Grid #${gridId}?`)) {
+                MOCK_DATA = MOCK_DATA.filter(d => d.Grid !== gridId);
+                logHistory('DELETE', gridId, `Menghapus data Grid #${gridId}`);
+                saveToStorage();
+                initDashboard();
+                showToast(`Grid #${gridId} berhasil dihapus!`);
+            }
+        };
+
+        function showToast(msg = "Data berhasil disimpan!") {
             const toast = document.getElementById('toast');
             document.getElementById('toastText').textContent = msg;
             toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
         }
 
-        // Modal Logic
-        const modal = document.getElementById('inputModal');
-        const inputGrid = document.getElementById('inputGrid');
+        function handleSaveInput() {
+            const gridId = parseInt(inputGrid.value);
+            const pic = document.getElementById('inputPIC').value.trim();
+            const status = document.getElementById('inputStatus').value;
+            const startDate = document.getElementById('inputStartDate').value;
+            const endDate = document.getElementById('inputEndDate').value;
+            const prioritas = document.getElementById('inputPrioritas').value;
+            const hari = parseInt(document.getElementById('inputHari').value) || 0;
+            const approval = document.getElementById('inputApproval').value;
+            const catatan = document.getElementById('inputCatatan').value;
 
-        inputGrid.addEventListener('input', (e) => {
-            const grid = parseInt(e.target.value);
-            const found = MOCK_DATA.find(d => d.Grid === grid);
-            if(found) {
-                document.getElementById('inputPIC').value = found.PIC || '';
-                document.getElementById('inputStatus').value = found.Status || '';
-                document.getElementById('inputStartDate').value = found['Tanggal Mulai'] || '';
-                document.getElementById('inputEndDate').value = found['Tanggal Akhir'] || '';
-                document.getElementById('inputPrioritas').value = found.Prioritas || 'Sedang';
-                document.getElementById('inputHari').value = found['Hari Kerja'] || 0;
-                document.getElementById('inputApproval').value = found.Approval || '';
-            }
-        });
-
-        window.editRow = function(gridId) {
-            modal.classList.add('active');
-            inputGrid.value = gridId;
-            inputGrid.dispatchEvent(new Event('input'));
-        };
-
-        window.deleteRow = function(gridId) {
-            if(confirm(`Hapus data Grid #${gridId}?`)) {
-                sendToGoogleSheets({ gridId: gridId }, 'delete');
-                logHistory('DELETE', gridId, `Menghapus Grid #${gridId}`);
-            }
-        };
-
-        document.getElementById('saveSubmitBtn').addEventListener('click', function() {
-            const payload = {
-                gridId: inputGrid.value,
-                project: "Effective Planted",
-                pic: document.getElementById('inputPIC').value,
-                prioritas: document.getElementById('inputPrioritas').value,
-                status: document.getElementById('inputStatus').value,
-                startDate: document.getElementById('inputStartDate').value,
-                endDate: document.getElementById('inputEndDate').value,
-                hariKerja: document.getElementById('inputHari').value,
-                approval: document.getElementById('inputApproval').value,
-                keterangan: document.getElementById('inputCatatan').value
-            };
-            if(!payload.gridId || !payload.pic || !payload.status) {
-                alert("Mohon lengkapi Grid ID, PIC, dan Status.");
+            if(!gridId || !pic || !status || !startDate) {
+                errorText.textContent = "Mohon lengkapi Grid ID, PIC, Status, dan Tanggal Mulai (*).";
+                errorBox.classList.remove('hidden');
                 return;
             }
-            sendToGoogleSheets(payload, 'save');
-            logHistory('SAVE', payload.gridId, `Menyimpan data Grid #${payload.gridId} oleh PIC ${payload.pic}`);
-            modal.classList.remove('active');
+
+            errorBox.classList.add('hidden');
+            const dataIndex = MOCK_DATA.findIndex(d => d.Grid === gridId);
+            const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+            
+            if(dataIndex > -1) {
+                MOCK_DATA[dataIndex].PIC = pic;
+                MOCK_DATA[dataIndex].Status = status;
+                MOCK_DATA[dataIndex]['Tanggal Mulai'] = startDate;
+                MOCK_DATA[dataIndex]['Tanggal Akhir'] = endDate;
+                MOCK_DATA[dataIndex].Prioritas = prioritas;
+                MOCK_DATA[dataIndex]['Hari Kerja'] = hari;
+                MOCK_DATA[dataIndex].Approval = approval;
+                if(catatan) {
+                    const existing = MOCK_DATA[dataIndex].Catatan ? MOCK_DATA[dataIndex].Catatan + ' | ' : '';
+                    MOCK_DATA[dataIndex].Catatan = existing + `[${today}] ${catatan}`;
+                }
+                logHistory('UPDATE', gridId, `Update status: ${status}, PIC: ${pic}, Hari: ${hari}`);
+            } else {
+                MOCK_DATA.push({
+                    "Grid": gridId,
+                    "Project": "EP",
+                    "PIC": pic,
+                    "Status": status,
+                    "Tanggal Mulai": startDate,
+                    "Tanggal Akhir": endDate,
+                    "Prioritas": prioritas,
+                    "Hari Kerja": hari,
+                    "Approval": approval,
+                    "Catatan": catatan ? `[${today}] ${catatan}` : ''
+                });
+                logHistory('CREATE', gridId, `Menambah grid baru. PIC: ${pic}, Status: ${status}`);
+            }
+
+            saveToStorage();
+            initDashboard();
+            hideModal();
+            showToast("Data Effective Planted berhasil disimpan!");
+        }
+
+        // Export CSV
+        document.getElementById('exportExcelBtn').addEventListener('click', function() {
+            const dataToExport = getFilteredData();
+            if(dataToExport.length === 0) {
+                alert("Tidak ada data untuk diexport.");
+                return;
+            }
+            let csv = "Grid,Project,PIC,Prioritas,Status,Tanggal Mulai,Tanggal Akhir,Hari Kerja,Approval,Catatan\r\n";
+            dataToExport.forEach(row => {
+                csv += `${row.Grid},"${row.Project}","${row.PIC}","${row.Prioritas}","${row.Status}",${row['Tanggal Mulai']},${row['Tanggal Akhir']},${row['Hari Kerja']},"${row.Approval || ''}","${(row.Catatan || '').replace(/"/g, '""')}"\r\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "Effective_Planted_Export.csv";
+            link.click();
+            showToast("File CSV berhasil didownload!");
         });
 
-        document.getElementById('syncGoogleBtn').addEventListener('click', fetchFromGoogleSheets);
-        document.getElementById('openInputBtn').addEventListener('click', () => { modal.classList.add('active'); document.getElementById('dailyInputForm').reset(); });
-        document.getElementById('closeModalBtn').addEventListener('click', () => modal.classList.remove('active'));
-        document.getElementById('cancelSubmitBtn').addEventListener('click', () => modal.classList.remove('active'));
-        document.getElementById('openHistoryBtn').addEventListener('click', () => document.getElementById('historyModal').classList.add('active'));
-        document.getElementById('closeHistoryBtn').addEventListener('click', () => document.getElementById('historyModal').classList.remove('active'));
-        document.getElementById('closeHistoryModalBtn').addEventListener('click', () => document.getElementById('historyModal').classList.remove('active'));
-        document.getElementById('openGuideBtn').addEventListener('click', () => document.getElementById('guideModal').classList.add('active'));
-        document.getElementById('closeGuideBtn').addEventListener('click', () => document.getElementById('guideModal').classList.remove('active'));
-        document.getElementById('closeGuideModalBtn').addEventListener('click', () => document.getElementById('guideModal').classList.remove('active'));
+        document.getElementById('openInputBtn').addEventListener('click', showModal);
+        document.getElementById('closeModalBtn').addEventListener('click', hideModal);
+        document.getElementById('cancelSubmitBtn').addEventListener('click', hideModal);
+        document.getElementById('saveSubmitBtn').addEventListener('click', handleSaveInput);
 
-        document.getElementById('filterPic').addEventListener('change', initDashboard);
-        document.getElementById('resetFilterBtn').addEventListener('click', () => { document.getElementById('filterPic').value = ''; initDashboard(); });
+        document.getElementById('openHistoryBtn').addEventListener('click', () => historyModal.classList.add('active'));
+        document.getElementById('closeHistoryBtn').addEventListener('click', () => historyModal.classList.remove('active'));
+        document.getElementById('closeHistoryModalBtn').addEventListener('click', () => historyModal.classList.remove('active'));
+        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+            if(confirm("Bersihkan seluruh log histori?")) {
+                AUDIT_HISTORY = [];
+                localStorage.removeItem(HISTORY_KEY);
+                renderHistoryTable();
+                showToast("Histori dibersihkan!");
+            }
+        });
 
-        document.addEventListener('DOMContentLoaded', fetchFromGoogleSheets);
+        // Guide Modal Listeners
+        document.getElementById('openGuideBtn').addEventListener('click', () => guideModal.classList.add('active'));
+        document.getElementById('closeGuideBtn').addEventListener('click', () => guideModal.classList.remove('active'));
+        document.getElementById('closeGuideModalBtn').addEventListener('click', () => guideModal.classList.remove('active'));
+
+        document.getElementById('resetStorageBtn').addEventListener('click', function() {
+            if(confirm("Reset seluruh data ke kondisi awal?")) {
+                MOCK_DATA = JSON.parse(JSON.stringify(EXACT_INITIAL_DATA));
+                localStorage.removeItem(STORAGE_KEY);
+                initDashboard();
+                showToast("Data di-reset ke data awal!");
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', initDashboard);
     </script>
 </body>
 </html>
