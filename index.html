@@ -503,13 +503,12 @@
                 if(result.users && Array.isArray(result.users) && result.users.length > 0) {
                     REGISTERED_USERS = result.users;
                 } else {
-                    REGISTERED_USERS = [
-                        { email: 'ruslisan@gmail.com', name: 'Ruslisan', role: 'Administrator' },
-                        { email: 'atika@company.com', name: 'Atika', role: 'Anggota' },
-                        { email: 'meiva@company.com', name: 'Meiva', role: 'Anggota' },
-                        { email: 'rico@company.com', name: 'Rico', role: 'Anggota' },
-                        { email: 'galuh@company.com', name: 'Galuh', role: 'Anggota' }
-                    ];
+                    REGISTERED_USERS = [  { email: "ruslisan93@gmail.com", name: "Lisan", role: "Administrator" },
+      { email: "atikaputriistiqomah@mail.ugm.ac.id", name: "Atika", role: "Anggota" },
+      { email: "rezkymeivaanisa@mail.ugm.ac.id", name: "Meiva", role: "Anggota" },
+      { email: "ricotama4321@gmail.com", name: "Rico", role: "Anggota" },
+      { email: "galuhayucitarabbany2005@mail.ugm.ac.id", name: "Galuh", role: "Anggota" }
+    ];
                 }
 
                 if(result.status === "success" && Array.isArray(result.data)) {
